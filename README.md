@@ -132,7 +132,7 @@ Below is an example of the REST API endpoints. Adjust according to your actual c
 | POST | `/api/employees` | Create a new employee | JSON of employee data (e.g. name, email, etc.) | Created employee |
 | PUT | `/api/employees/{id}` | Update an existing employee | JSON of updated fields | Updated employee |
 | DELETE | `/api/employees/{id}` | Delete an employee by ID | — | No content / confirmation |
-| DELETE | `/api/employees` | Delete **all** employees | — | No content / confirmation |
+
 
 ### Example Request & Response
 
@@ -241,3 +241,4 @@ You can also manually test endpoints using Postman or cURL.
 - Inspired by standard CRUD API patterns  
 - Uses **CQRS + MediatR** for clean architecture and better API/database management  
 - Any libraries, tooling, or tutorials you followed  
+
