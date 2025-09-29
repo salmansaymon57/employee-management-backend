@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Employee.API
 {
@@ -14,6 +15,14 @@ namespace Employee.API
 
             builder.Services.AddDbContext<Model.EmployeeDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+            builder.Services.AddMediatR(configuration =>
+            {
+                configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
+
+
+            } );
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

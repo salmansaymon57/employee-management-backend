@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Employee.API.Model;
 using Microsoft.AspNetCore.Cors;
+using MediatR;
+using Employee.API.Features.Employees.createEmployee;
+using Employee.API.Features.Employees.GetEmployeeById;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Employee.API.Controllers
 {
@@ -16,10 +20,12 @@ namespace Employee.API.Controllers
     public class EmployeemasterController : ControllerBase
     {
         private readonly EmployeeDbContext _context;
+        private readonly ISender _sender;
 
-        public EmployeemasterController(EmployeeDbContext context)
+        public EmployeemasterController(EmployeeDbContext context, ISender sender   )
         {
             _context = context;
+            _sender = sender;
         }
 
         // GET: api/Employeemaster
@@ -33,14 +39,15 @@ namespace Employee.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<EmployeeData>> GetEmployeeData(int id)
         {
-            var employeeData = await _context.EmployeeData.FindAsync(id);
 
-            if (employeeData == null)
+            var employee = await _sender.Send(new GetEmployeeByIdQuery(id));
+
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return employeeData;
+            return Ok(employee);
         }
 
         // PUT: api/Employeemaster/5
@@ -77,12 +84,13 @@ namespace Employee.API.Controllers
         // POST: api/Employeemaster
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<EmployeeData>> PostEmployeeData(EmployeeData employeeData)
+        public async Task<ActionResult<EmployeeData>> PostEmployeeData(CreateEmployeeCommand command)
         {
-            _context.EmployeeData.Add(employeeData);
-            await _context.SaveChangesAsync();
+            var employeeId = await _sender.Send(command);
 
-            return CreatedAtAction("GetEmployeeData", new { id = employeeData.employeeId }, employeeData);
+
+            return Ok(employeeId);
+
         }
 
         // DELETE: api/Employeemaster/5
